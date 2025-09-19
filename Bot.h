@@ -3,8 +3,7 @@
 
 class Bot{
     public:
-        Bot(Board);
-        int play();
+        int play(Board);
     private:
         Board board;
         int evaluate(Board&);

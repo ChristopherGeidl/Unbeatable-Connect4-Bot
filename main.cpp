@@ -5,7 +5,7 @@ using namespace std;
 
 int main(){
     Board b;
-    Bot bot(b);
+    Bot bot;
     int col = 0; //input variable
     int validInput = false;
     b.swapTurns();
@@ -14,7 +14,7 @@ int main(){
         cout << "Player " << b.boardTurnToChar(b.getTurn()) << "'s Turn" << endl;
         b.printBoard();
         if(b.getTurn() == 1){
-            b.input(bot.play());
+            b.input(bot.play(b));
         }else{
             while(!validInput){
                 cout << "Enter Column Number:";

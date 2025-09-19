@@ -4,9 +4,6 @@
 #include "Bot.h"
 using namespace std;
 
-Bot::Bot(Board b){
-    board = b;
-}
 //minimax with optimizations: explore all future moves
 //alpha-beta pruning (get rid of guarenteed bad)
 //transposition table: (stores results to avoid repeated calculations)
@@ -163,47 +160,45 @@ int Bot::minimax(Board &b, int depth, int alpha, int beta, int maximizingPlayer)
     }
 
     if(maximizingPlayer){
-        int maxEval = -1000000;
+        int value = -1000000;
         for(int j=1; j<=7; j++){
             Board temp = b;
             if(temp.input(j)){
                 temp.swapTurns();
-                int eval = minimax(temp, depth-1, alpha, beta, 0);
-                maxEval = max(maxEval, eval);
-                alpha = max(alpha, eval);
-                if(beta <= alpha){
-                    break;//prune
+                value = max(value, minimax(temp, depth-1, alpha, beta, 0));
+                if(value >= beta){
+                    break; //prune beta
                 }
+                alpha = max(alpha, value);
             }
         }
-        return maxEval;
+        return value;
     }else{
-        int minEval = 1000000;
+        int value = 1000000;
         for(int j=1; j<=7; j++){
             Board temp = b;
             if(temp.input(j)){
                 temp.swapTurns();
-                int eval = minimax(temp, depth-1, alpha, beta, 1);
-                minEval = min(minEval, eval);
-                beta = min(beta, eval);
-                if(beta <= alpha){
-                    break;//prune
+                value = min(value, minimax(temp, depth-1, alpha, beta, 1));
+                if(value <= alpha){
+                    break; //prune alpha
                 }
+                beta = min(beta, value);
             }
         }
-        return minEval;
+        return value;
     }
 }
 
-int Bot::play(){
+int Bot::play(Board b){
     int bestMove = 4;//first move should be 4
     int bestScore = -1000000;
 
     for(int j=1; j<=7; j++){
-        Board temp = board;
+        Board temp = b;
         if(temp.input(j)){
             temp.swapTurns();
-            int score = minimax(temp, 6, -1000000, 1000000, 1);//depth=6
+            int score = minimax(temp, 8, -1000000, 1000000, 1);//depth=6
             if(score > bestScore){
                 bestScore = score;
                 bestMove = j;
