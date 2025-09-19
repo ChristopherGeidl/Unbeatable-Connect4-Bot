@@ -6,6 +6,7 @@ class Board{
         Board();
         int input(int);
         int getTurn(){ return turn; } 
+        int getBoardIJ(int i, int j){ return board[i][j]; }
         int checkWin();
         void printBoard();
         char boardTurnToChar(int);
