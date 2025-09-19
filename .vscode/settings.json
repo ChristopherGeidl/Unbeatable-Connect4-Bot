@@ -1,5 +1,6 @@
 {
     "files.associations": {
-        "board.C": "cpp"
+        "board.C": "cpp",
+        "iostream": "cpp"
     }
 }
