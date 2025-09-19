@@ -12,12 +12,149 @@ Bot::Bot(Board b){
 //transposition table: (stores results to avoid repeated calculations)
 
 int Bot::evaluate(Board &b){
-    if(b.checkWin() && b.getTurn() == 1){//bot wins
-        return 1000000;
-    }else if(b.checkWin() && b.getTurn() == 2){//player wins
-        return -1000000;
+    if(b.checkWin()){
+        if(b.getTurn() == 1){
+            return 1000000; //bot wins
+        }else{
+            return -1000000; //player wins
+        }
     }
-    return 0; //TODO: add heuristics (like favor center column, 2-in-row, etc)
+
+    int score = 0;
+    //Center column has most win conditions:
+    for(int i=0; i<6; i++){
+        if(b.getBoardIJ(i,4) == 1){
+            score += 3;
+        }else if(b.getBoardIJ(i,4) == 2){
+            score -=3;
+        }
+    }
+
+    // Horizontal windows of 4 ################ Doesn't check if unblocked #####################
+    for(int i=0; i<6; i++){
+        for(int j=0; j<4; j++){
+            int botPieces = 0;
+            int playerPieces = 0;
+            for(int k=0; k<4; k++){
+                int cell = b.getBoardIJ(i, j + k);
+                if(cell == 1){
+                    botPieces++;
+                }else if(cell == 2){
+                    playerPieces++;
+                }
+            }
+
+            if(botPieces > 0 && playerPieces == 0){
+                if(botPieces == 2){
+                    score += 10;
+                }
+                else if(botPieces == 3){
+                    score += 50;
+                }
+            } else if(playerPieces > 0 && botPieces == 0) {
+                if(playerPieces == 2){
+                    score -= 10;
+                }
+                else if(playerPieces == 3){
+                    score -= 80;
+                }
+            }
+        }
+    }
+    // Vertical windows of 4
+    for(int j=0; j<7; j++){
+        for(int i=0; i<4; i++){
+            int botPieces = 0;
+            int playerPieces = 0;
+            for(int k=0; k<4; k++){
+                int cell = b.getBoardIJ(i + k, j);
+                if(cell == 1){
+                    botPieces++;
+                }else if(cell == 2){
+                    playerPieces++;
+                }
+            }
+
+            if(botPieces > 0 && playerPieces == 0){
+                if(botPieces == 2){
+                    score += 10;
+                }
+                else if(botPieces == 3){
+                    score += 50;
+                }
+            } else if(playerPieces > 0 && botPieces == 0) {
+                if(playerPieces == 2){
+                    score -= 10;
+                }
+                else if(playerPieces == 3){
+                    score -= 80;
+                }
+            }
+        }
+    }
+    //positive slope diagonals
+    for(int i=0; i<3; i++){
+        for(int j=0; j<4; j++){
+            int botPieces = 0;
+            int playerPieces = 0;
+            for(int k=0; k<4; k++){
+                int cell = b.getBoardIJ(i+k, j+k);
+                if(cell == 1){
+                    botPieces++;
+                }else if(cell == 2){
+                    playerPieces++;
+                }
+            }
+
+            if(botPieces > 0 && playerPieces == 0){
+                if(botPieces == 2){
+                    score += 10;
+                }
+                else if(botPieces == 3){
+                    score += 50;
+                }
+            } else if(playerPieces > 0 && botPieces == 0) {
+                if(playerPieces == 2){
+                    score -= 10;
+                }
+                else if(playerPieces == 3){
+                    score -= 80;
+                }
+            }
+        }
+    }
+    //negative slope diagonals
+    for(int i=3; i<6; i++){
+        for(int j=0; j<4; j++){
+            int botPieces = 0;
+            int playerPieces = 0;
+            for(int k=0; k<4; k++){
+                int cell = b.getBoardIJ(i - k, j + k);
+                if(cell == 1){
+                    botPieces++;
+                }else if(cell == 2){
+                    playerPieces++;
+                }
+            }
+
+            if(botPieces > 0 && playerPieces == 0){
+                if(botPieces == 2){
+                    score += 10;
+                }
+                else if(botPieces == 3){
+                    score += 50;
+                }
+            } else if(playerPieces > 0 && botPieces == 0) {
+                if(playerPieces == 2){
+                    score -= 10;
+                }
+                else if(playerPieces == 3){
+                    score -= 80;
+                }
+            }
+        }
+    }
+    return score; 
 }
 
 int Bot::minimax(Board &b, int depth, int alpha, int beta, int maximizingPlayer){
@@ -31,11 +168,11 @@ int Bot::minimax(Board &b, int depth, int alpha, int beta, int maximizingPlayer)
             Board temp = b;
             if(temp.input(j)){
                 temp.swapTurns();
-                int eval = minimax(temp, depth-1, alpha, beta, 1);
+                int eval = minimax(temp, depth-1, alpha, beta, 0);
                 maxEval = max(maxEval, eval);
                 alpha = max(alpha, eval);
                 if(beta <= alpha){
-                    break; //prune ##########################################
+                    break;//prune
                 }
             }
         }
@@ -46,11 +183,11 @@ int Bot::minimax(Board &b, int depth, int alpha, int beta, int maximizingPlayer)
             Board temp = b;
             if(temp.input(j)){
                 temp.swapTurns();
-                int eval = minimax(temp, depth-1, alpha, beta, 0);
+                int eval = minimax(temp, depth-1, alpha, beta, 1);
                 minEval = min(minEval, eval);
                 beta = min(beta, eval);
                 if(beta <= alpha){
-                    break; //prune #############################
+                    break;//prune
                 }
             }
         }
@@ -66,7 +203,7 @@ int Bot::play(){
         Board temp = board;
         if(temp.input(j)){
             temp.swapTurns();
-            int score = minimax(temp, 6, -1000000, 1000000, 0);//depth=6
+            int score = minimax(temp, 6, -1000000, 1000000, 1);//depth=6
             if(score > bestScore){
                 bestScore = score;
                 bestMove = j;
