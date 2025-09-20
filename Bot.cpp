@@ -10,7 +10,7 @@ using namespace std;
 
 int Bot::evaluate(Board &b){
     if(b.checkWin()){
-        if(b.getTurn() == 2){
+        if(b.getTurn() == 3 - player){
             return 1000000; //bot wins
         }else{
             return -1000000; //player wins
@@ -35,9 +35,9 @@ int Bot::evaluate(Board &b){
             int empty = 0;
             for(int k=0; k<4; k++){
                 int cell = b.getBoardIJ(i, j + k);
-                if(cell == 1){
+                if(cell == player){
                     botPieces++;
-                }else if(cell == 2){
+                }else if(cell == 3 - player){
                     playerPieces++;
                 }else{
                     empty++;
@@ -62,9 +62,9 @@ int Bot::evaluate(Board &b){
             int empty = 0;
             for(int k=0; k<4; k++){
                 int cell = b.getBoardIJ(i + k, j);
-                if(cell == 1){
+                if(cell == player){
                     botPieces++;
-                }else if(cell == 2){
+                }else if(cell == 3 - player){
                     playerPieces++;
                 }else{
                     empty++;
@@ -88,9 +88,9 @@ int Bot::evaluate(Board &b){
             int empty = 0;
             for(int k=0; k<4; k++){
                 int cell = b.getBoardIJ(i+k, j+k);
-                if(cell == 1){
+                if(cell == player){
                     botPieces++;
-                }else if(cell == 2){
+                }else if(cell == 3 - player){
                     playerPieces++;
                 }else{
                     empty++;
@@ -114,9 +114,9 @@ int Bot::evaluate(Board &b){
             int empty = 0;
             for(int k=0; k<4; k++){
                 int cell = b.getBoardIJ(i - k, j + k);
-                if(cell == 1){
+                if(cell == player){
                     botPieces++;
-                }else if(cell == 2){
+                }else if(cell == 3 - player){
                     playerPieces++;
                 }else{
                     empty++;
@@ -132,7 +132,7 @@ int Bot::evaluate(Board &b){
             if(playerPieces == 2 && empty == 2){ score -= 10; }
         }
     }
-    return score; 
+    return score;
 }
 
 int Bot::minimax(Board &b, int depth, int alpha, int beta, int maximizingPlayer){
