@@ -6,6 +6,7 @@ class Bot{
         int play(Board);
     private:
         Board board;
+        int isFirstTurn = 1;
         int evaluate(Board&);
         int minimax(Board&, int, int, int, int);
 };

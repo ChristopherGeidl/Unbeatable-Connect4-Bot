@@ -10,7 +10,7 @@ using namespace std;
 
 int Bot::evaluate(Board &b){
     if(b.checkWin()){
-        if(b.getTurn() == 1){
+        if(b.getTurn() == 2){
             return 1000000; //bot wins
         }else{
             return -1000000; //player wins
@@ -21,41 +21,37 @@ int Bot::evaluate(Board &b){
     //Center column has most win conditions:
     for(int i=0; i<6; i++){
         if(b.getBoardIJ(i,4) == 1){
-            score += 3;
+            score += 10;
         }else if(b.getBoardIJ(i,4) == 2){
-            score -=3;
+            score -= 10;
         }
     }
 
-    // Horizontal windows of 4 ################ Doesn't check if unblocked #####################
+    // Horizontal windows of 4
     for(int i=0; i<6; i++){
         for(int j=0; j<4; j++){
             int botPieces = 0;
             int playerPieces = 0;
+            int empty = 0;
             for(int k=0; k<4; k++){
                 int cell = b.getBoardIJ(i, j + k);
                 if(cell == 1){
                     botPieces++;
                 }else if(cell == 2){
                     playerPieces++;
+                }else{
+                    empty++;
                 }
             }
 
-            if(botPieces > 0 && playerPieces == 0){
-                if(botPieces == 2){
-                    score += 10;
-                }
-                else if(botPieces == 3){
-                    score += 50;
-                }
-            } else if(playerPieces > 0 && botPieces == 0) {
-                if(playerPieces == 2){
-                    score -= 10;
-                }
-                else if(playerPieces == 3){
-                    score -= 80;
-                }
-            }
+            if(botPieces == 3 && empty == 1){ score += 100; }
+            if(botPieces == 2 && empty == 2){ score += 10; }
+            if(playerPieces == 3 && botPieces == 1){ score += 500; }
+            if(playerPieces == 2 && botPieces == 1){ score += 50; }
+
+            if(playerPieces == 3 && empty == 1){ score -= 500; }
+            if(playerPieces == 2 && empty == 2){ score -= 10; }
+
         }
     }
     // Vertical windows of 4
@@ -63,30 +59,25 @@ int Bot::evaluate(Board &b){
         for(int i=0; i<4; i++){
             int botPieces = 0;
             int playerPieces = 0;
+            int empty = 0;
             for(int k=0; k<4; k++){
                 int cell = b.getBoardIJ(i + k, j);
                 if(cell == 1){
                     botPieces++;
                 }else if(cell == 2){
                     playerPieces++;
+                }else{
+                    empty++;
                 }
             }
 
-            if(botPieces > 0 && playerPieces == 0){
-                if(botPieces == 2){
-                    score += 10;
-                }
-                else if(botPieces == 3){
-                    score += 50;
-                }
-            } else if(playerPieces > 0 && botPieces == 0) {
-                if(playerPieces == 2){
-                    score -= 10;
-                }
-                else if(playerPieces == 3){
-                    score -= 80;
-                }
-            }
+            if(botPieces == 3 && empty == 1){ score += 100; }
+            if(botPieces == 2 && empty == 2){ score += 10; }
+            if(playerPieces == 3 && botPieces == 1){ score += 500; }
+            if(playerPieces == 2 && botPieces == 1){ score += 50; }
+
+            if(playerPieces == 3 && empty == 1){ score -= 500; }
+            if(playerPieces == 2 && empty == 2){ score -= 10; }
         }
     }
     //positive slope diagonals
@@ -94,30 +85,25 @@ int Bot::evaluate(Board &b){
         for(int j=0; j<4; j++){
             int botPieces = 0;
             int playerPieces = 0;
+            int empty = 0;
             for(int k=0; k<4; k++){
                 int cell = b.getBoardIJ(i+k, j+k);
                 if(cell == 1){
                     botPieces++;
                 }else if(cell == 2){
                     playerPieces++;
+                }else{
+                    empty++;
                 }
             }
 
-            if(botPieces > 0 && playerPieces == 0){
-                if(botPieces == 2){
-                    score += 10;
-                }
-                else if(botPieces == 3){
-                    score += 50;
-                }
-            } else if(playerPieces > 0 && botPieces == 0) {
-                if(playerPieces == 2){
-                    score -= 10;
-                }
-                else if(playerPieces == 3){
-                    score -= 80;
-                }
-            }
+            if(botPieces == 3 && empty == 1){ score += 100; }
+            if(botPieces == 2 && empty == 2){ score += 10; }
+            if(playerPieces == 3 && botPieces == 1){ score += 500; }
+            if(playerPieces == 2 && botPieces == 1){ score += 50; }
+
+            if(playerPieces == 3 && empty == 1){ score -= 500; }
+            if(playerPieces == 2 && empty == 2){ score -= 10; }
         }
     }
     //negative slope diagonals
@@ -125,30 +111,25 @@ int Bot::evaluate(Board &b){
         for(int j=0; j<4; j++){
             int botPieces = 0;
             int playerPieces = 0;
+            int empty = 0;
             for(int k=0; k<4; k++){
                 int cell = b.getBoardIJ(i - k, j + k);
                 if(cell == 1){
                     botPieces++;
                 }else if(cell == 2){
                     playerPieces++;
+                }else{
+                    empty++;
                 }
             }
 
-            if(botPieces > 0 && playerPieces == 0){
-                if(botPieces == 2){
-                    score += 10;
-                }
-                else if(botPieces == 3){
-                    score += 50;
-                }
-            } else if(playerPieces > 0 && botPieces == 0) {
-                if(playerPieces == 2){
-                    score -= 10;
-                }
-                else if(playerPieces == 3){
-                    score -= 80;
-                }
-            }
+            if(botPieces == 3 && empty == 1){ score += 100; }
+            if(botPieces == 2 && empty == 2){ score += 10; }
+            if(playerPieces == 3 && botPieces == 1){ score += 500; }
+            if(playerPieces == 2 && botPieces == 1){ score += 50; }
+
+            if(playerPieces == 3 && empty == 1){ score -= 500; }
+            if(playerPieces == 2 && empty == 2){ score -= 10; }
         }
     }
     return score; 
@@ -191,8 +172,13 @@ int Bot::minimax(Board &b, int depth, int alpha, int beta, int maximizingPlayer)
 }
 
 int Bot::play(Board b){
-    int bestMove = 4;//first move should be 4
+    int bestMove = 4;//in ties center should win
     int bestScore = -1000000;
+    //Force first move center (in a perfect game this will force the bot to win)
+    if(isFirstTurn){
+        isFirstTurn = 0;
+        return 4;
+    }
 
     for(int j=1; j<=7; j++){
         Board temp = b;
